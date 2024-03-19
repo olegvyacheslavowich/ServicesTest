@@ -26,14 +26,15 @@ class MyService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         log("onStartCommand service")
+        val startValue = intent?.getIntExtra(EXTRA_START, 0) ?: 0
         coroutineScope.launch {
-            for (i in 0 until 100) {
+            for (i in startValue until 100) {
                 delay(1000)
                 log(i.toString())
             }
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
@@ -47,7 +48,9 @@ class MyService : Service() {
     }
 
     companion object {
-        fun newIntent(context: Context): Intent =
-            Intent(context, MyService::class.java)
+
+        const val EXTRA_START = "extra_start"
+        fun newIntent(context: Context, startFrom: Int): Intent =
+            Intent(context, MyService::class.java).putExtra(EXTRA_START, startFrom)
     }
 }
