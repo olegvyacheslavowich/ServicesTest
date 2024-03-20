@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Layout
 import android.view.LayoutInflater
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import ru.elipson.servicestest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -23,11 +24,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.simpleService.setOnClickListener {
+            stopService(MyForegroundService.newIntent(context = applicationContext, 15))
             startService(MyService.newIntent(context = applicationContext, 15))
         }
 
         binding.simpleForegroundService.setOnClickListener {
-            showNotification()
+            //showNotification()
+            //startService(MyForegroundService.newIntent(context = applicationContext, 0))
+            ContextCompat.startForegroundService(
+                this,
+                MyForegroundService.newIntent(context = applicationContext, 0)
+            )
         }
 
     }
