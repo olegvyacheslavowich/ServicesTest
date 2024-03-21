@@ -28,10 +28,11 @@ class MyService : Service() {
         log("onStartCommand service")
         val startValue = intent?.getIntExtra(EXTRA_START, 0) ?: 0
         coroutineScope.launch {
-            for (i in startValue until 100) {
+            for (i in startValue until 20) {
                 delay(1000)
                 log(i.toString())
             }
+            stopSelf()
         }
 
         return START_REDELIVER_INTENT

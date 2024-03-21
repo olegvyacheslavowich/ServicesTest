@@ -25,4 +25,13 @@
         app:layout_constraintTop_toBottomOf="@id/simpleService"/>
 
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/simpleIntentService"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="INTENT SERVICE"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/simpleForegroundService"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
