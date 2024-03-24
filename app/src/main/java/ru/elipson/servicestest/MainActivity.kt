@@ -3,6 +3,9 @@ package ru.elipson.servicestest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -44,6 +47,15 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        binding.jobSchedulerService.setOnClickListener {
+            val componentName = ComponentName(this, MyJobService::class.java) //указываем сервис
+            val jobInfo = JobInfo.Builder(MyJobService.ID, componentName)  //устанавливаем ограничения
+                .setRequiresCharging(true) //только если включена зарядка
+               // .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) //только если подключен к вай фай
+                .build()
+            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler //запускаем на выполнение
+            jobScheduler.schedule(jobInfo)
+        }
     }
 
     private fun showNotification() {
