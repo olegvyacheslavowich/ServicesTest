@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
+import android.app.job.JobWorkItem
 import android.content.ComponentName
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding
         get() = _binding ?: throw RuntimeException("binding is null")
 
+    private var page: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -49,12 +51,29 @@ class MainActivity : AppCompatActivity() {
 
         binding.jobSchedulerService.setOnClickListener {
             val componentName = ComponentName(this, MyJobService::class.java) //указываем сервис
-            val jobInfo = JobInfo.Builder(MyJobService.ID, componentName)  //устанавливаем ограничения
-                .setRequiresCharging(true) //только если включена зарядка
-               // .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) //только если подключен к вай фай
-                .build()
-            val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler //запускаем на выполнение
-            jobScheduler.schedule(jobInfo)
+            val jobInfo =
+                JobInfo.Builder(MyJobService.ID, componentName)  //устанавливаем ограничения
+                    .setRequiresCharging(true) //только если включена зарядка
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED) //только если подключен к вай фай
+                    .build()
+            val jobScheduler =
+                getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler //запускаем на выполнение
+            //   jobScheduler.schedule(jobInfo) //не складывает сервисы в очередь. Каждый следующий сервис отменяет предыдущий
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val intent = MyJobService.newIntent(page++)
+                jobScheduler.enqueue(
+                    jobInfo,
+                    JobWorkItem(intent)
+                )
+            } //складывает сервисы в очередь. Сервисы выполняются по очереди
+            else {
+                startService(MyIntentService.newIntent(this, page++))
+            }
+        }
+
+        binding.jobIntentService.setOnClickListener {
+            MyJobIntentService.enqueue(this, page++)
         }
     }
 
