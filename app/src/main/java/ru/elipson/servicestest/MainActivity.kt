@@ -14,6 +14,8 @@ import android.text.Layout
 import android.view.LayoutInflater
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import ru.elipson.servicestest.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -74,6 +76,15 @@ class MainActivity : AppCompatActivity() {
 
         binding.jobIntentService.setOnClickListener {
             MyJobIntentService.enqueue(this, page++)
+        }
+
+        binding.workerService.setOnClickListener {
+            val workManager = WorkManager.getInstance(applicationContext)
+            workManager.enqueueUniqueWork(
+                MyWorker.NAME,
+                ExistingWorkPolicy.REPLACE,
+                MyWorker.makeRequest(page++)
+            )
         }
     }
 
