@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             val workManager = WorkManager.getInstance(applicationContext)
             workManager.enqueueUniqueWork(
                 MyWorker.NAME,
-                ExistingWorkPolicy.REPLACE,
+                ExistingWorkPolicy.APPEND_OR_REPLACE,
                 MyWorker.makeRequest(page++)
             )
         }

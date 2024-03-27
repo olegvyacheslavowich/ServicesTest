@@ -38,7 +38,7 @@ class MyWorker(context: Context, private val workerParams: WorkerParameters) :
 
         private fun makeConstraints(): Constraints {
             return Constraints.Builder()
-                .setRequiresCharging(true)
+             //   .setRequiresCharging(true)
                 .build()
         }
     }
